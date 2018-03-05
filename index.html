@@ -49,50 +49,83 @@
                 var lis = [];
                 //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
 
-				
-
-				//以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
-                $.post('http://116.85.50.226:8888/blogmanager/visit/blog/queryBlogList?rows=8&page='+page, function(res){
-                    //假设你的列表返回在data集合中
-                    layui.each(res.list, function(index, item){
-                        //lis.push('<li>'+ item.title +'</li>');
-
-                        lis.push('<li>' +
-                                        '<fieldset class="layui-elem-field">' +
-                                            '<legend>'+ item.title +'</legend>' +
-                                            '<div class="layui-field-box">' +
-                                                '<div class="layui-container">' +
-                                                    '<div class="layui-row">' +
-                                                        '<div class="layui-col-md12" style="height:100px;overflow-x:auto;overflow-y:hidden;" id='+item.id+'>' +
-                                                            item.content +
-
-                                                            '<div align="center">' +
-                                                                "<a href=\"javascript:void(0)\" id=\"hidden"+item.id+"\" style=\"display:none;\" onclick=\"document.getElementById('"+item.id+"').style.height='100px';document.getElementById('hidden"+item.id+"').style.display='none';document.getElementById('show"+item.id+"').style.display='block';\">点我收起</a>"+
-                                                            '</div>'+
-
-                                                        '</div>'+
-                                                    '</div>'+
-                                                '</div>'+
-                                            '</div>' +
-                                        '</fieldset>' +
-                                        '<div class="layui-row">' +
-                                            '<div class="layui-col-md12">' +
-                                                '<div  align="center"  class="layui-anim layui-anim-scaleSpring">' +
-                                                    '<button class="layui-btn layui-btn-primary layui-btn-fluid" id="show'+item.id+'">' +
-                                                        "<a href=\"javascript:void(0)\" style=\"display:block\" onclick=\"document.getElementById('"+item.id+"').style.height='100%';document.getElementById('hidden"+item.id+"').style.display='block';document.getElementById('show"+item.id+"').style.display='none';\">加载更多</a>\n" +
-                                                    '</button>'+
-                                                '</div>'+
-                                            '</div>'+
-                                        '</div>'+
-                                '</li>');
 
 
-                    });
 
-                    //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
-                    //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
-                    next(lis.join(''), page < res.pages);
+
+
+//使用jsonp解决跨域问题
+                $.ajax({
+        //          url:"http://localhost:8081/rest/itemcat/list?callback=getMessage",
+                    url:"http://116.85.50.226:8888/blogmanager/visit/blog/queryBlogList?rows=8&page="+page,
+                    type:"post",
+                    cache:false,
+                    async:false,
+                    crossDomain:true,
+                    dataType:"jsonp",
+                    jsonp:"callback", //这里定义了callback的参数名称，以便服务获取callback的函数名即getMessage
+                    jsonpCallback:"getMessage", //这里定义了jsonp的回调函数
+                    success:function(data){
+                        var res=JSON.parse(data);
+
+                        //假设你的列表返回在data集合中
+                        layui.each(res.list, function(index, item){
+                            //lis.push('<li>'+ item.title +'</li>');
+
+                            lis.push('<li>' +
+                                    '<fieldset class="layui-elem-field">' +
+                                    '<legend>'+ item.title +'</legend>' +
+                                    '<div class="layui-field-box">' +
+                                    '<div class="layui-container">' +
+                                    '<div class="layui-row">' +
+                                    '<div class="layui-col-md12" style="height:100px;overflow-x:auto;overflow-y:hidden;" id='+item.id+'>' +
+                                    item.content +
+
+                                    '<div align="center">' +
+                                    "<a href=\"javascript:void(0)\" id=\"hidden"+item.id+"\" style=\"display:none;\" onclick=\"document.getElementById('"+item.id+"').style.height='100px';document.getElementById('hidden"+item.id+"').style.display='none';document.getElementById('show"+item.id+"').style.display='block';\">点我收起</a>"+
+                                    '</div>'+
+
+                                    '</div>'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '</div>' +
+                                    '</fieldset>' +
+                                    '<div class="layui-row">' +
+                                    '<div class="layui-col-md12">' +
+                                    '<div  align="center"  class="layui-anim layui-anim-scaleSpring">' +
+                                    '<button class="layui-btn layui-btn-primary layui-btn-fluid" id="show'+item.id+'">' +
+                                    "<a href=\"javascript:void(0)\" style=\"display:block\" onclick=\"document.getElementById('"+item.id+"').style.height='100%';document.getElementById('hidden"+item.id+"').style.display='block';document.getElementById('show"+item.id+"').style.display='none';\">加载更多</a>\n" +
+                                    '</button>'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '</li>');
+
+
+                        });
+
+                        //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+                        //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+                        next(lis.join(''), page < res.pages);
+
+
+
+
+                    },
+                    error:function(){
+                        alert("发生异常");
+                    }
                 });
+
+
+                function getMessage(jsonp){
+                    alert("message:"+jsonp);
+                }
+
+
+
+
+
 
 
 
