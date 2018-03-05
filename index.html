@@ -25,7 +25,7 @@
     <div class="layui-row  layui-col-space8" >
         <div class="layui-col-md1">
             <div class="layui-col-md12">
-                <img src="http://116.85.50.226:8888/blogmanager/static/logo.png" width="100%">
+                <img src="https://116.85.50.226:8443/blogmanager/static/logo.png" width="100%">
             </div>
             <div class="layui-col-md12">
             </div>
@@ -57,7 +57,7 @@
 //使用jsonp解决跨域问题
                 $.ajax({
         //          url:"http://localhost:8081/rest/itemcat/list?callback=getMessage",
-                    url:"http://116.85.50.226:8888/blogmanager/visit/blog/queryBlogList?rows=8&page="+page,
+                    url:"https://116.85.50.226:8443/blogmanager/visit/blog/queryBlogList?rows=8&page="+page,
                     type:"post",
                     cache:false,
                     async:false,
